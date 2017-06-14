@@ -266,7 +266,7 @@ Don't worry about `ApiControllerBase` for now, we'll cover that later.
 
 `IUserService`, which we'll look at next, is passed into the controller via Constructor Dependency Injection. Our `UserController` doesn't care how it's initialized, it simply receives it from the app's IoC Container by listing it as an argument to the constructor.
 
-In the `Add` method, we immediately map the `UserAddModel` to its `Entity` form. The `UserService` is what ultimately interacts with the database to add a user, our the service layer is setup such that it can only interact with `Entities` stored in `CoreAbstractions`. The Service Layer should never references a web project, and consequently its' models. Rather, it's quite the opposite. Our MVC Web project is the consumer of the Service Layer. In order to make use of the services, it must map any frontend models into the `Entities` that the services understand.
+In the `Add` method, we immediately map the `UserAddModel` to its `Entity` form. The `UserService` is what ultimately interacts with the database to add a user, and the service layer is setup such that it can only interact with `Entities` stored in `CoreAbstractions`. The Service Layer should never reference a web project, and consequently its' models. Rather, it's quite the opposite. Our MVC Web project is the consumer of the Service Layer. In order to make use of the services, it must map any frontend models into the `Entities` that the services understand.
 
 The rest is pretty straight-forward. The `IUserService` is used to add a new user, which returns its' new `Id`. Lastly, we return an HTTP `Ok` result with the `Id` as the content.
 
@@ -568,53 +568,49 @@ There's two JavaScript files for the Vanilla example.
 const QP = {};
 
 QP.FormService = (() => {
-	return {
-		setInputUpdateListener: (inputElement, callback) => {
-			inputElement.addEventListener('input', event => {
-				inputElement.style.borderColor = '#cccccc';
-				const errorTextNode = inputElement.nextElementSibling;
-				errorTextNode.innerHTML = null;
-				errorTextNode.style.display = 'none';
-
-				if (!!callback) {
-					callback();
-				}
-			});
-		},
-		displayHttpError: (inputElement, errorText) => {
-			inputElement.style.borderColor = 'red';
-			const errorTextNode = inputElement.nextElementSibling;
-			errorTextNode.innerHTML = errorText;
-			errorTextNode.style.display = 'block';
-		}
-	}
+    return {
+        setInputUpdateListener: (inputElement) => {
+            inputElement.addEventListener('input', event => {
+                inputElement.style.borderColor = '#cccccc';
+                const errorTextNode = inputElement.nextElementSibling;
+                errorTextNode.innerHTML = null;
+                errorTextNode.style.display = 'none';
+            });
+        },
+        displayHttpError: (inputElement, errorText) => {
+            inputElement.style.borderColor = 'red';
+            const errorTextNode = inputElement.nextElementSibling;
+            errorTextNode.innerHTML = errorText;
+            errorTextNode.style.display = 'block';
+        }
+    }
 })();
 
 QP.HttpService = ((x) => {
-	// add axios response interceptor
-	x.interceptors.response.use(
-		response => response,
-		error => {
-			if (error.response) {
-				const responseErrors = error.response.data;
-				const errors = {};
-				for (let key in responseErrors) {
-					if (responseErrors.hasOwnProperty(key)) {
-						errors[key] = responseErrors[key][0];
-					}
-				}
-				return Promise.reject(errors);
-			} else {
-				return Promise.reject(error);
-			}
+    // add axios response interceptor
+    x.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response) {
+                const responseErrors = error.response.data;
+                const errors = {};
+                for (let key in responseErrors) {
+                    if (responseErrors.hasOwnProperty(key)) {
+                        errors[key] = responseErrors[key][0];
+                    }
+                }
+                return Promise.reject(errors);
+            } else {
+                return Promise.reject(error);
+            }
 
-		});
+    });
 
-	return {
-		register: (registerModel) => {
-			return x.post('/api/User/Register', registerModel);
-		}
-	}
+    return {
+        register: (registerModel) => {
+            return x.post('/api/User/Register', registerModel);
+        }
+    }
 })(axios);
 ```
 
