@@ -23,7 +23,7 @@ footer-links:
   flickr:
   github: rushfive
   instagram:
-  linkedin:
+  linkedin: isaiah-lee-51750344
   pinterest:
   rss: # just type anything here for a working RSS icon
   twitter: 
@@ -84,3 +84,5 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+
+excerpt_separator: <!--more-->

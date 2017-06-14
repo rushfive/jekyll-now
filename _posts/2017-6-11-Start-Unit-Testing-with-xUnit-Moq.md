@@ -3,9 +3,14 @@ layout: post
 title: .NET Core Unit Testing (Complete guide with sample project and exercises/solutions)
 ---
 
-Before I started doing software development, writing unit tests was usually an afterthought or something I neglected while working on my personal projects. After working for a while at a job that necessitates writing unit tests, the benefits of unit test coverage has become undeniably clear.
+*This post is a thorough guide into starting unit tests in .NET, utilizing two popular libraries in Moq and xUnit.*
+
+Before I started doing software development professionally, writing unit tests was usually an afterthought or something I neglected while working on my personal projects. After working for a while at a job that necessitates writing unit tests, the benefits of unit test coverage has become undeniably clear.
 
 Among many other reasons, the tests help catch regressions in your codebase (something that used to work before stopped working at some point after code has been changed), they provide confidence that refactoring or adding/changing code won't break existing code. With that said, I can admit that for new and very tiny personal projects, the benefits aren't as profound. You most likely will have the small codebase and product understood well enough, such that when you make a change you'll also be conscious of other places that are affected.
+
+
+<!--more-->
 
 Regardless, it's a great habit to get into writing tests as you go along. Start writing them early on in the beginning of a new project, and try to keep your tests in parity as you add new features or change code. It's a lot easier writing tests as you go, as opposed to writing a huge application without them and having to painstakingly write them all at once. Also, most companies out there require unit testing (among other kinds of tests) so you might as well start getting into a habit that has great practical value.
 
