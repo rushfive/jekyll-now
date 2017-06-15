@@ -47,58 +47,9 @@ then we get some nice automatic validations, such as both `Name` and `Email` req
 
 *So what's the issue here?*
 
-Well, there's a couple:
-
-#### They only handle the simplest of cases
+**They only handle the simplest of cases**
 
 What if you wanted to ensure that the `Email` is unique and is currently not already in use by another `User` in your app? There's no simple way to incorporate all the logic of initializing a database connection, making a call, then running the checks in a simple `Attribute`. In any non-trivial business domain, these types of checks are going to make up the bulk of your validation code, so right off the bat, we're going to need a more robust system in place.
-
-#### They can't be elegantly combined with custom complex validations
-
-When you use `Data Annotations` to validate models and an error is caught by the `Controller`, the `ModelState` is updated with the errors and a `BadRequestObjectResult` is immediately kicked back as the response. You can't even debug the `Controller` directly, the execution of code never enters the method body.
-
-This doesn't have to keep you from writing out your more complex validations. Once the code execution gets into the method's body, you know that the model's properties have been validated via attributes, and you can proceed to validate the other things. But on the UX side of things, this creates a really awkward and horrible experience for the user, where they have to potentially step through a validation "process".
-
-For example, lets say we have this model:
-
-```c#
-public class User
-{
-    [Required]
-    public string Name { get; set; }
-
-    [Required]
-    public string Email { get; set; }
-}
-```
-
-and the user input and tried to send this off to the server:
-
-```js
-{
-    "Name": null,
-    "Email": "bob@test.com"
-}
-```
-
-Oops! The user forgot to enter a name, so the attribute validations will catch that and return an error. But what if the email `bob@test.com` was already taken as well?
-
-Being the good developers we are, we have definitely created a check for this in the controller or elsewhere, but because the code execution never enters the controller method, our validations on the `Email` uniqueness are never called. Our frontend app only gets an error for the name, and to the user, it seems like the email `bob@test.com` is valid.
-
-Remember, we're good developers, so of course we pass the error back to the UI so the user can fix their mistake. They put in a valid name, then hit the Register button again to pass this off:
-
-```js
-{
-    "Name": "bob",
-    "Email": "bob@test.com"
-}
-```
-
-Now the model being passed to the server passes both attribute checks, so it hits our `Email` uniqueness validation. Because `bob@test.com` already exists, we pass another error back to the user: `This email is already in use.`
-
-This whole process is horrible UX. The user shouldn't have to hit the Register button multiple times in order to "walk through" validation steps. They should be able to receive all the validations, for all properties on the model, in one swoop.
-
-So for now, forget about validations using `Data Annotation` attributes. I'd be lying if I said a use-case didn't exist for these, but we can do better.
 
 ---
 
