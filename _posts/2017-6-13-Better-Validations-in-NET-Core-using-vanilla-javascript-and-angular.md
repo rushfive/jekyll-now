@@ -833,4 +833,4 @@ Hope this walkthrough has been useful for you. We've gone through the process of
 
 As a last note, when it comes to validations, always make sure that you **AT LEAST** have validations on the backend. Sometimes it's nice to include some lighter validations on the frontend, which potentially saves a round-trip to and from the server. However, anything on the frontend can be modified by malicious attacker. You shouldn't *trust* any data coming from the front end and thus need to **completely** validate everything on the backend.
 
-Thanks for reading. Feel free to leave comments/questions, and I'd appreciate any feedback and also a star for the sample project repo! Cheers!
+Thanks for reading!
