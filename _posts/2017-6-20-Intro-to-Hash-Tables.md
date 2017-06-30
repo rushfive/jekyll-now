@@ -12,6 +12,8 @@ An array is always able to *get* an element in constant time if you know the ind
 
 However, a map is generally implemented *generically*, such that any `data type` can be used as a key. This causes an issue with *point 1* above if we need a map with a non-integer key. 
 
+<!--more-->
+
 Well, lets say we are using integer keys. We still have an issue of utilizing an array, because we could potentially require a *huge* array to hold only a small number of entries. If the integer keys we need to store are 0 and 1000, we would need to allocate enough memory to hold an array of size 1001, just to store two entries. What a waste!
 
 ## Hash Codes and the Compression Function
