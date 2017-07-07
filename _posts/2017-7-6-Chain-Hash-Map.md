@@ -296,4 +296,223 @@ public bool Remove(TKey key)
 
 We walkthrough the internal array, and use the `UnsortedMap.Remove(TKey key)` method to try removing from existing buckets. Be sure to return the `bool` accordingly.
 
+The entire class for the ChainHashMap:
+
+```c#
+public class ChainHashMap<TKey, TValue> : IMap<TKey, TValue>
+{
+    private UnsortedMap<TKey, TValue>[] internalArray { get; set; }
+
+    private int size { get; set; } = 0;
+    private int capacity { get; set; }
+
+    public ChainHashMap(int capacity)
+    {
+        this.capacity = capacity;
+        this.internalArray = new UnsortedMap<TKey, TValue>[capacity];
+    }
+
+    public ChainHashMap() : this(5)
+    {
+    }
+
+    public Entry<TKey, TValue>[] Entries()
+    {
+        var entries = new Entry<TKey, TValue>[this.size];
+
+        int index = 0;
+        for (int i = 0; i < this.size; i++)
+        {
+            var map = this.internalArray[i];
+            if (map != null)
+            {
+                var mapEntries = map.Entries();
+                for (int j = 0; j < mapEntries.Length; j++)
+                {
+                    entries[index] = mapEntries[j];
+                    index++;
+                }
+            }
+        }
+
+        return entries;
+    }
+
+    public TValue Get(TKey key)
+    {
+        for (int i = 0; i < this.size; i++)
+        {
+            var map = this.internalArray[i];
+            if (map != null)
+            {
+                var entries = map.Entries();
+                for (int j = 0; j < entries.Length; j++)
+                {
+                    if (KeyEquals(entries[j].Key, key))
+                    {
+                        return entries[j].Value;
+                    }
+                }
+            }
+        }
+
+        throw new Exception();
+    }
+
+    public bool IsEmpty()
+    {
+        return this.Size() == 0;
+    }
+
+    public TKey[] Keys()
+    {
+        var keys = new TKey[this.size];
+
+        int index = 0;
+        for (int i = 0; i < this.internalArray.Length; i++)
+        {
+            var map = this.internalArray[i];
+            if (map != null)
+            {
+                var mapEntries = map.Entries();
+                for (int j = 0; j < mapEntries.Length; j++)
+                {
+                    keys[index] = mapEntries[j].Key;
+                    index++;
+                }
+            }
+        }
+
+        return keys;
+    }
+
+    public bool Remove(TKey key)
+    {
+        for (int i = 0; i < this.internalArray.Length; i++)
+        {
+            var map = this.internalArray[i];
+            if (map != null)
+            {
+                bool removed = map.Remove(key);
+                if (removed)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void Set(TKey key, TValue value)
+    {
+        int compressedSlot;
+
+        // resize internal array if full
+        if (this.size == this.capacity)
+        {
+            this.capacity *= 2;
+
+            var resized = new UnsortedMap<TKey, TValue>[this.capacity * 2];
+            Entry<TKey, TValue>[] entries = this.Entries();
+
+            for (int i = 0; i < entries.Length; i++)
+            {
+                Entry<TKey, TValue> entry = entries[i];
+                if (entry == null)
+                {
+                    continue;
+                }
+                compressedSlot = this.Compress(entry.Key);
+                if (resized[compressedSlot] == null)
+                {
+                    resized[compressedSlot] = new UnsortedMap<TKey, TValue>();
+                }
+                resized[compressedSlot].Set(entry.Key, entry.Value);
+            }
+
+            this.internalArray = resized;
+        }
+
+        compressedSlot = this.Compress(key);
+        if (this.internalArray[compressedSlot] == null)
+        {
+            this.internalArray[compressedSlot] = new UnsortedMap<TKey, TValue>();
+        }
+
+        this.internalArray[compressedSlot].Set(key, value);
+        this.size++;
+    }
+
+    public int Size()
+    {
+        return this.size;
+    }
+
+    public TValue[] Values()
+    {
+        var values = new TValue[this.size];
+
+        int index = 0;
+        for (int i = 0; i < this.internalArray.Length; i++)
+        {
+            var map = this.internalArray[i];
+            if (map != null)
+            {
+                var mapEntries = map.Entries();
+                for (int j = 0; j < mapEntries.Length; j++)
+                {
+                    values[index] = mapEntries[j].Value;
+                    index++;
+                }
+            }
+        }
+
+        return values;
+    }
+
+    private static bool KeyEquals(TKey k1, TKey k2)
+    {
+        return Comparer<TKey>.Default.Compare(k1, k2) == 0;
+    }
+
+    // use long to prevent integer overflow
+    private int Compress(TKey key)
+    {
+        long hashCode = Math.Abs(key.GetHashCode());
+
+        int p = this.capacity;
+        while(true)
+        {
+            if (isPrime(++p))
+            {
+                break;
+            }
+        }
+        
+        var random = new Random();
+        int a = random.Next(1, p);
+        int b = random.Next(0, p);
+
+        return (int)(((a * hashCode + b) % p) % this.capacity);
+
+        // functions
+        bool isPrime(int number)
+        {
+            if (number == 1) return false;
+            if (number == 2) return true;
+
+            var boundary = (int)Math.Floor(Math.Sqrt(number));
+
+            for (int i = 2; i <= boundary; ++i)
+            {
+                if (number % i == 0) return false;
+            }
+
+            return true;
+        }
+    }
+}
+```
+
 And that's it, we've implemented a hash map using separate chaining that handles collisions. In the next post, we'll explore a different collision handling scheme - linear probing.
