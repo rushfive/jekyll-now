@@ -20,6 +20,8 @@ where `n` is the number of entries, and `k` is the number of buckets. As the val
 
 A *bucket* is simply an auxiliary data structure that is used to store multiple entries in that slot. Linked lists and simple maps are commonly used, but it could really be anything that can store multiple items.
 
+<!--more-->
+
 Having a bucket allows us to handle collisions, but ideally we want to only store one item per bucket on average. This is because if there's more, finding an item by key requires us to walkthrough the bucket to find it, and we're potentially back to linear run times for those kinds of operations.
 
 ### Implementing the ChainHashMap
