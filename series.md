@@ -8,6 +8,7 @@ Check out my blog series on various topics from this page. These are collections
 
 ### Series Listing
 - [Data Structure & Algorithms](#data-structs)
+- [.NET Tutorials & Walkthroughs](#net-tutorials)
 
 ---
 
@@ -23,3 +24,11 @@ Code examples and implementations use C#, but the way posts are written are gene
 - [Hash Tables (how they work, hash codes and compression functions)]({{ site.baseurl }}{% post_url 2017-6-29-Intro-to-Hash-Tables %})
 - [Handling Collisions using Separate Chaining (with implementation)]({{ site.baseurl }}{% post_url 2017-7-6-Chain-Hash-Map %})
 - [Handling Collisions using Open Addressing (with implementation)]({{ site.baseurl }}{% post_url 2017-7-7-Linear-Probe-Map %})
+
+---
+
+### .NET Tutorials & Walkthroughs<a name="net-tutorials"></a>
+This series is just a random assortment of full and thorough walkthroughs of a particular topic.
+
+- [Getting started on Unit Testing in .NET Core]({{ site.baseurl }}{% post_url 2017-6-11-Start-Unit-Testing-with-xUnit-Moq %})
+- [Building a Global Validation System in .NET Core (frontend examples in vanilla and angular)]({{ site.baseurl }}{% post_url 2017-6-13-Better-Validations-in-NET-Core-using-vanilla-javascript-and-angular %})
