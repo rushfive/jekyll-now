@@ -103,11 +103,4 @@ This is a more elaborate function that accounts for repeated patterns in a set o
 
 ---
 
-Now that we better understand how hashing works, we move to the next problem: how do we handle collisions?
-
-As noted earlier, a *collision* happens when a hash function (hash code + compression function) computes the same key for two different objects. We try to minimize collisions using methods like the ones discussed in this post, but we'll inevitably run into them given enough inputs.
-
-There are some clever strategies used to resolve this issue, and that'll be the focus of the next couple of posts.
-
-- Separate Chaining
-- Open Addressing
+Now that we better understand how hashing works, the next couple of posts will discuss a couple different *collision handling* schemes, along with walk
